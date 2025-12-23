@@ -23,8 +23,11 @@ import BatteryHealthPage from "@/pages/service/battery-health";
 import LeadsPage from "@/pages/crm/leads";
 import SpareInventoryPage from "@/pages/spares/inventory";
 import WarrantyClaimsPage from "@/pages/warranty/claims";
+import FinanceDashboardPage from "@/pages/finance/dashboard";
+import DealerManagementPage from "@/pages/admin/dealers";
+import UserManagementPage from "@/pages/admin/users";
+import SettingsPage from "@/pages/admin/settings";
 import LoginPage from "@/pages/auth/login";
-import PlaceholderPage from "@/pages/placeholder";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -43,18 +46,10 @@ function Router() {
       <Route path="/spares" component={SpareInventoryPage} />
       <Route path="/warranty" component={WarrantyClaimsPage} />
       <Route path="/crm" component={LeadsPage} />
-      <Route path="/finance">
-        {() => <PlaceholderPage title="Finance & MIS" description="View financial reports, incentives, and analytics." />}
-      </Route>
-      <Route path="/admin/dealers">
-        {() => <PlaceholderPage title="Dealer Management" description="Manage dealer profiles and configurations." />}
-      </Route>
-      <Route path="/admin/users">
-        {() => <PlaceholderPage title="User Management" description="Manage users, roles, and permissions." />}
-      </Route>
-      <Route path="/admin/settings">
-        {() => <PlaceholderPage title="System Settings" description="Configure system-wide settings and preferences." />}
-      </Route>
+      <Route path="/finance" component={FinanceDashboardPage} />
+      <Route path="/admin/dealers" component={DealerManagementPage} />
+      <Route path="/admin/users" component={UserManagementPage} />
+      <Route path="/admin/settings" component={SettingsPage} />
       <Route component={NotFound} />
     </Switch>
   );

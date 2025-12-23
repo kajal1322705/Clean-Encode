@@ -5,3 +5,5 @@ export { testRideFieldMap } from "./testRides";
 export { complaintFieldMap } from "./complaints";
 export { spareFieldMap } from "./spares";
 export { warrantyClaimFieldMap } from "./warrantyClaims";
+export { dealerFieldMap } from "./dealers";
+export { userFieldMap } from "./users";

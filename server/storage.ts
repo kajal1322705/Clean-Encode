@@ -538,6 +538,137 @@ export class DatabaseStorage implements IStorage {
         arrivalDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
       },
     ]);
+
+    // Seed leads
+    await db.insert(leads).values([
+      {
+        leadNumber: "LD-1001",
+        customerName: "Anil Kapoor",
+        phone: "9876543300",
+        email: "anil@example.com",
+        source: "walk_in",
+        interestedModel: "ZForce X1",
+        status: "hot",
+        dealerId: dealer.id,
+      },
+      {
+        leadNumber: "LD-1002",
+        customerName: "Sunita Verma",
+        phone: "9876543301",
+        source: "website",
+        interestedModel: "ZForce City",
+        status: "warm",
+        dealerId: dealer.id,
+      },
+    ]);
+
+    // Seed test rides
+    await db.insert(testRides).values([
+      {
+        customerName: "Vikash Gupta",
+        customerPhone: "9876543400",
+        vehicleModel: "ZForce X1",
+        scheduledDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+        salesperson: "Rajesh Sales",
+        status: "scheduled",
+        dealerId: dealer.id,
+      },
+      {
+        customerName: "Neha Sharma",
+        customerPhone: "9876543401",
+        vehicleModel: "ZForce X2 Pro",
+        scheduledDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+        salesperson: "Priya Sales",
+        status: "completed",
+        feedback: "Great acceleration and smooth ride",
+        conversionStatus: "converted",
+        dealerId: dealer.id,
+      },
+    ]);
+
+    // Seed complaints
+    await db.insert(complaints).values([
+      {
+        complaintNumber: "CMP-1001",
+        customerName: "Rohit Saxena",
+        customerPhone: "9876543500",
+        vehicleNumber: "MH 12 XY 5678",
+        category: "battery_problem",
+        description: "Battery not charging beyond 80%",
+        status: "open",
+        escalationLevel: 1,
+        dealerId: dealer.id,
+      },
+    ]);
+
+    // Seed spare parts
+    await db.insert(spares).values([
+      {
+        partNumber: "ZF-BAT-001",
+        partName: "Lithium Battery Pack 48V",
+        category: "battery",
+        quantity: 15,
+        minStock: 5,
+        unitPrice: 45000,
+        binLocation: "A-01-01",
+        dealerId: dealer.id,
+      },
+      {
+        partNumber: "ZF-MOT-001",
+        partName: "Hub Motor 1000W",
+        category: "motor",
+        quantity: 8,
+        minStock: 3,
+        unitPrice: 12000,
+        binLocation: "B-02-03",
+        dealerId: dealer.id,
+      },
+      {
+        partNumber: "ZF-CHG-001",
+        partName: "Fast Charger 5A",
+        category: "charger",
+        quantity: 25,
+        minStock: 10,
+        unitPrice: 3500,
+        binLocation: "C-01-05",
+        dealerId: dealer.id,
+      },
+    ]);
+
+    // Seed warranty claims
+    await db.insert(warrantyClaims).values([
+      {
+        claimNumber: "WC-1001",
+        vin: "ZF2024X1PRO001234",
+        vehicleNumber: "MH 12 AB 1234",
+        customerName: "Vikram Singh",
+        claimType: "battery",
+        description: "Battery capacity degraded below 70% within warranty period",
+        claimAmount: 35000,
+        status: "under_review",
+        dealerId: dealer.id,
+      },
+    ]);
+
+    // Seed battery health records
+    await db.insert(batteryHealth).values([
+      {
+        vin: "ZF2024X1PRO001234",
+        vehicleNumber: "MH 12 AB 1234",
+        healthPercentage: 92,
+        chargeCycles: 145,
+        lastChecked: new Date(),
+        dealerId: dealer.id,
+      },
+      {
+        vin: "ZF2024X2MAX003456",
+        vehicleNumber: "MH 01 CD 5678",
+        healthPercentage: 68,
+        chargeCycles: 520,
+        lastChecked: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        dealerId: dealer.id,
+      },
+    ]);
   }
 }
 

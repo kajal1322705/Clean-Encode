@@ -225,6 +225,15 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/dealers", async (req, res) => {
+    try {
+      const dealer = await storage.createDealer(req.body);
+      res.status(201).json(dealer);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create dealer" });
+    }
+  });
+
   app.get("/api/leads", async (_req, res) => {
     try {
       const leads = await storage.getLeads();
@@ -390,6 +399,50 @@ export async function registerRoutes(
       res.status(201).json(record);
     } catch (error) {
       res.status(500).json({ error: "Failed to create battery health record" });
+    }
+  });
+
+  // Users routes (for demo - returns in-memory list)
+  const demoUsers = [
+    { id: 1, employeeId: "EMP-001", name: "Admin User", email: "admin@zforce.in", phone: "+91 9876543210", role: "admin", status: "active" },
+    { id: 2, employeeId: "EMP-002", name: "Dealer Manager", email: "dealer@zforce.in", phone: "+91 9876543211", role: "dealer_owner", dealerId: "dealer-1", status: "active" },
+    { id: 3, employeeId: "EMP-003", name: "Service Tech", email: "tech@zforce.in", phone: "+91 9876543212", role: "technician", dealerId: "dealer-1", status: "active" },
+  ];
+
+  app.get("/api/users", async (_req, res) => {
+    try {
+      res.json(demoUsers);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch users" });
+    }
+  });
+
+  app.post("/api/users", async (req, res) => {
+    try {
+      const newUser = {
+        id: demoUsers.length + 1,
+        ...req.body,
+        status: req.body.status || "active",
+      };
+      demoUsers.push(newUser);
+      res.status(201).json(newUser);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create user" });
+    }
+  });
+
+  // Auth routes (for demo)
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password, role } = req.body;
+      // Demo authentication - accept demo credentials
+      if (username && password) {
+        res.json({ success: true, user: { username, role }, message: "Login successful" });
+      } else {
+        res.status(401).json({ error: "Invalid credentials" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Login failed" });
     }
   });
 
