@@ -11,6 +11,21 @@ export async function registerRoutes(
   
   await storage.seedData();
   
+  app.get("/api/home/dashboard", async (req, res) => {
+    try {
+      const role = req.query.role as string || "dealer_principal";
+      const stats = await storage.getDashboardStats();
+      const recentActivity = [
+        { id: "1", type: "booking", description: "New booking BK-1001 created", time: "2 hours ago" },
+        { id: "2", type: "service", description: "Job card JC-5001 completed", time: "3 hours ago" },
+        { id: "3", type: "delivery", description: "Vehicle delivered to Rahul Sharma", time: "5 hours ago" },
+      ];
+      res.json({ stats, recentActivity, role });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch home dashboard data" });
+    }
+  });
+
   app.get("/api/dashboard/stats", async (_req, res) => {
     try {
       const stats = await storage.getDashboardStats();

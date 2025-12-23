@@ -1,0 +1,403 @@
+Good — this is **exactly how a fool-proof enterprise system is designed**.
+Below is a **zero-leak, zero-confusion access model**. No tab names exposed. No accidental permissions. No role misuse.
+
+I’ll break it into **3 layers**:
+
+1. Not Logged-In User (Public)
+2. Logged-In User (Role-Strict UI)
+3. Admin ≠ Operator (Hard separation of duties)
+
+---
+
+# 1. IF USER IS **NOT LOGGED IN** (PUBLIC ACCESS)
+
+### ✅ Pages Visible (ONLY THESE)
+
+```
+/login
+/otp
+/forgot-password
+/reset-password
+```
+
+### ❌ Pages NOT Accessible
+
+* Dashboard
+* Sales
+* Service
+* Spares
+* CRM
+* Warranty
+* Finance
+* Admin
+
+### ❌ UI RULE (IMPORTANT)
+
+* ❌ **NO sidebar**
+* ❌ **NO topbar**
+* ❌ **NO tab names**
+* ❌ **NO breadcrumbs**
+* ❌ **NO module hints**
+
+👉 If user manually types `/dashboard` → **redirect to /login**
+
+---
+
+## Public UI Layout (Minimal)
+
+```
+<AuthLayout>
+ ├─ Logo
+ ├─ Login / OTP Form
+ └─ Footer (Terms | Privacy)
+</AuthLayout>
+```
+
+---
+
+# 2. AFTER LOGIN → ROLE-STRICT PAGE LOADING
+
+### 🔐 RULE #1 (NON-NEGOTIABLE)
+
+> **If a role does not have permission →
+> The TAB DOES NOT EXIST in UI.**
+
+Not disabled.
+Not greyed out.
+**It literally does not render.**
+
+---
+
+# 3. ROLE = ADMIN ≠ OPERATOR (VERY IMPORTANT)
+
+You are 100% right:
+
+> **Admin should MANAGE, not DO operational work.**
+
+So we split roles **by responsibility**, not by hierarchy.
+
+---
+
+# 4. ROLE DEFINITIONS (HARD BOUNDARIES)
+
+## 4.1 HO SUPER ADMIN (SYSTEM GOVERNOR)
+
+### Purpose
+
+* Governance
+* Configuration
+* Monitoring
+
+### Can SEE
+
+* Dashboards (read-only)
+* Dealer performance
+* Audit logs
+* System configs
+
+### Can DO
+
+✔ Create / disable users
+✔ Assign roles
+✔ Configure workflows
+✔ Approve policies
+
+### ❌ ABSOLUTELY CANNOT
+
+* ❌ Create job cards
+* ❌ Create bookings
+* ❌ Edit stock
+* ❌ Submit warranty
+* ❌ Touch daily operations
+
+### Sidebar Visible
+
+```
+Dashboard
+Dealers
+Users & Roles
+Reports
+Audit Logs
+System Settings
+```
+
+---
+
+## 4.2 DEALER ADMIN / PRINCIPAL (BUSINESS OWNER)
+
+### Purpose
+
+* Supervision
+* Accountability
+
+### Can SEE
+
+* Dealer dashboard
+* Sales summary
+* Service summary
+* Finance summary
+
+### Can DO
+
+✔ Create users (sales, service, tech)
+✔ Approve internal requests
+
+### ❌ CANNOT
+
+* ❌ Create job cards
+* ❌ Perform service
+* ❌ Create warranty claims
+* ❌ Edit HO rules
+
+### Sidebar
+
+```
+Dashboard
+Users
+Sales (View)
+Service (View)
+Finance (View)
+Reports
+```
+
+---
+
+## 4.3 SALES EXECUTIVE (OPERATOR)
+
+### Purpose
+
+* Sell vehicles
+
+### Can SEE
+
+* Sales pages
+* CRM leads
+
+### Can DO
+
+✔ Create booking
+✔ Log test ride
+✔ Update lead follow-up
+
+### ❌ CANNOT
+
+* ❌ See service
+* ❌ See spares
+* ❌ See finance
+* ❌ Allocate VIN
+
+### Sidebar
+
+```
+Dashboard
+Bookings
+Test Rides
+Leads
+```
+
+---
+
+## 4.4 SERVICE MANAGER (OPERATOR)
+
+### Purpose
+
+* Control workshop operations
+
+### Can SEE
+
+* Service dashboard
+* Job cards
+* Spare requests
+* Warranty submission
+
+### Can DO
+
+✔ Create job cards
+✔ Assign technician
+✔ Submit warranty claims
+
+### ❌ CANNOT
+
+* ❌ Approve warranty
+* ❌ See dealer finance
+* ❌ Touch sales bookings
+
+### Sidebar
+
+```
+Dashboard
+Job Cards
+Warranty
+Spare Requests
+Battery Health
+```
+
+---
+
+## 4.5 TECHNICIAN (FIELD WORKER)
+
+### Purpose
+
+* Execute assigned jobs
+
+### Can SEE
+
+* ONLY assigned job cards
+
+### Can DO
+
+✔ Add work notes
+✔ Upload photos/videos
+✔ Close job (request closure)
+
+### ❌ CANNOT
+
+* ❌ Create job card
+* ❌ See customer billing
+* ❌ See inventory levels
+
+### Sidebar (Mobile)
+
+```
+My Jobs
+Upload Report
+```
+
+---
+
+## 4.6 CRM / CALL CENTER
+
+### Purpose
+
+* Lead nurturing
+
+### Can SEE
+
+* Leads
+* Follow-ups
+
+### Can DO
+
+✔ Call logs
+✔ WhatsApp follow-ups
+
+### ❌ CANNOT
+
+* ❌ Confirm booking
+* ❌ See delivery
+* ❌ See service
+
+### Sidebar
+
+```
+Leads
+Follow-ups
+Lost Sales
+```
+
+---
+
+## 4.7 FINANCE EXECUTIVE
+
+### Purpose
+
+* Money control
+
+### Can SEE
+
+* Receivables
+* Invoices
+* GST reports
+
+### Can DO
+
+✔ Mark payment received
+✔ Upload invoice
+
+### ❌ CANNOT
+
+* ❌ Book sales
+* ❌ Create job cards
+* ❌ Touch warranty
+
+### Sidebar
+
+```
+Receivables
+Invoices
+GST Reports
+```
+
+---
+
+# 5. UI RENDERING RULES (FOOL-PROOF)
+
+### RULE 1: NO PERMISSION = NO COMPONENT
+
+```jsx
+{canAccess('SERVICE_JOB_CARD') && <JobCardTab />}
+```
+
+### RULE 2: ROUTE GUARD
+
+```jsx
+<Route
+  path="/service/job-cards"
+  element={
+    <PermissionGuard permission="SERVICE_JOB_CARD">
+      <JobCardPage />
+    </PermissionGuard>
+  }
+/>
+```
+
+### RULE 3: API DOUBLE LOCK
+
+Even if someone hacks UI:
+
+```http
+403 FORBIDDEN
+```
+
+---
+
+# 6. WHAT USER SEES IF HE TRIES SOMETHING ILLEGAL
+
+| Scenario                 | Result              |
+| ------------------------ | ------------------- |
+| Typing URL manually      | Redirect / 403      |
+| Inspect Element          | No component exists |
+| API call                 | Rejected            |
+| Role changed mid-session | Force logout        |
+
+---
+
+# 7. WHY THIS IS BULLET-PROOF
+
+* No accidental clicks
+* No “oops I created a job card”
+* No data leaks
+* Clean audit trails
+* Legal & compliance safe
+* Scales to 1000+ dealers
+
+---
+
+## FINAL TRUTH
+
+If **Admin can create job cards**, your system is **badly designed**.
+Admins **govern**, operators **operate**. Period.
+
+---
+
+### NEXT OPTIONS (REAL BUILD)
+
+Pick one:
+
+1. RBAC **database schema**
+2. **Permission matrix JSON** (production-ready)
+3. **React PermissionGuard code**
+4. **API middleware (Node/Java/Spring)**
+5. **Audit & compliance model**
+
+Reply with the number.

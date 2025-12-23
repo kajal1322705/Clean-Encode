@@ -96,18 +96,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-primary">
-            <Zap className="h-8 w-8 text-primary-foreground" />
-          </div>
-          <CardTitle className="text-2xl font-bold">ZFORCE DMS</CardTitle>
-          <CardDescription>
-            Electric Vehicle Dealership Management System
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+    <Card className="w-full max-w-md">
+      <CardHeader className="text-center">
+        <CardTitle className="text-xl font-bold">Sign In</CardTitle>
+        <CardDescription>
+          Enter your credentials to access the system
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -239,6 +235,5 @@ export default function LoginPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
   );
 }

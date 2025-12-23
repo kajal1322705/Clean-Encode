@@ -1,7 +1,6 @@
 import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard,
-  ShoppingCart,
   Wrench,
   Package,
   Shield,
@@ -13,13 +12,15 @@ import {
   Car,
   Truck,
   ClipboardList,
-  AlertCircle,
   UserCog,
   Bike,
   Battery,
-  MessageSquare,
+  Phone,
   LogOut,
   User,
+  Zap,
+  IndianRupee,
+  TrendingUp,
 } from "lucide-react";
 import {
   Sidebar,
@@ -37,99 +38,184 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Module, type ModuleType } from "@shared/schema";
+import { UserRole } from "@shared/schema";
 
 interface NavItem {
   title: string;
   url: string;
   icon: React.ElementType;
   badge?: string;
-  module?: ModuleType;
 }
 
 interface NavGroup {
   label: string;
-  module: ModuleType;
   items: NavItem[];
 }
 
-const navGroups: NavGroup[] = [
-  {
-    label: "Sales",
-    module: Module.SALES,
-    items: [
-      { title: "Bookings", url: "/sales/bookings", icon: FileText, badge: "12" },
-      { title: "Deliveries", url: "/sales/deliveries", icon: Truck },
-      { title: "Stock", url: "/sales/stock", icon: Car },
-      { title: "Test Rides", url: "/sales/test-rides", icon: Bike },
-    ],
-  },
-  {
-    label: "Service",
-    module: Module.SERVICE,
-    items: [
-      { title: "Job Cards", url: "/service/job-cards", icon: ClipboardList, badge: "8" },
-      { title: "Service History", url: "/service/history", icon: Wrench },
-      { title: "Battery Health", url: "/service/battery-health", icon: Battery },
-      { title: "Complaints", url: "/service/complaints", icon: MessageSquare },
-    ],
-  },
-  {
-    label: "Spare Parts",
-    module: Module.SPARES,
-    items: [
-      { title: "Inventory", url: "/spares", icon: Package },
-    ],
-  },
-  {
-    label: "Warranty",
-    module: Module.WARRANTY,
-    items: [
-      { title: "Claims", url: "/warranty", icon: Shield },
-    ],
-  },
-  {
-    label: "CRM",
-    module: Module.CRM,
-    items: [
-      { title: "Leads", url: "/crm", icon: Users },
-    ],
-  },
-  {
-    label: "Finance",
-    module: Module.FINANCE,
-    items: [
-      { title: "Dashboard", url: "/finance", icon: BarChart3 },
-    ],
-  },
-  {
-    label: "Admin",
-    module: Module.ADMIN,
-    items: [
-      { title: "Dealers", url: "/admin/dealers", icon: Building2 },
-      { title: "Users", url: "/admin/users", icon: UserCog },
-      { title: "Settings", url: "/admin/settings", icon: Settings },
-    ],
-  },
-];
+function getRoleNavigation(role: string): NavGroup[] {
+  switch (role) {
+    case UserRole.HO_SUPER_ADMIN:
+      return [
+        {
+          label: "Governance",
+          items: [
+            { title: "Dealers", url: "/admin/dealers", icon: Building2 },
+            { title: "Users & Roles", url: "/admin/users", icon: UserCog },
+            { title: "Reports", url: "/finance", icon: BarChart3 },
+            { title: "Audit Logs", url: "/admin/settings", icon: ClipboardList },
+            { title: "System Settings", url: "/admin/settings", icon: Settings },
+          ],
+        },
+      ];
+    
+    case UserRole.HO_SALES_ADMIN:
+      return [
+        {
+          label: "Sales Oversight",
+          items: [
+            { title: "Dealers", url: "/admin/dealers", icon: Building2 },
+            { title: "Bookings (View)", url: "/sales/bookings", icon: FileText },
+            { title: "Stock", url: "/sales/stock", icon: Car },
+            { title: "Reports", url: "/finance", icon: BarChart3 },
+          ],
+        },
+      ];
+
+    case UserRole.HO_SERVICE_ADMIN:
+      return [
+        {
+          label: "Service Oversight",
+          items: [
+            { title: "Dealers", url: "/admin/dealers", icon: Building2 },
+            { title: "Job Cards (View)", url: "/service/job-cards", icon: ClipboardList },
+            { title: "Warranty (View)", url: "/warranty", icon: Shield },
+            { title: "Reports", url: "/finance", icon: BarChart3 },
+          ],
+        },
+      ];
+
+    case UserRole.HO_FINANCE_ADMIN:
+      return [
+        {
+          label: "Finance Oversight",
+          items: [
+            { title: "Dealers", url: "/admin/dealers", icon: Building2 },
+            { title: "Receivables", url: "/finance", icon: IndianRupee },
+            { title: "Reports", url: "/finance", icon: BarChart3 },
+          ],
+        },
+      ];
+
+    case UserRole.DEALER_PRINCIPAL:
+      return [
+        {
+          label: "Management",
+          items: [
+            { title: "Users", url: "/admin/users", icon: UserCog },
+          ],
+        },
+        {
+          label: "Overview",
+          items: [
+            { title: "Sales (View)", url: "/sales/bookings", icon: FileText },
+            { title: "Service (View)", url: "/service/job-cards", icon: ClipboardList },
+            { title: "Finance (View)", url: "/finance", icon: BarChart3 },
+            { title: "Reports", url: "/finance", icon: TrendingUp },
+          ],
+        },
+      ];
+
+    case UserRole.DEALER_SALES_EXECUTIVE:
+      return [
+        {
+          label: "Sales",
+          items: [
+            { title: "Bookings", url: "/sales/bookings", icon: FileText, badge: "12" },
+            { title: "Test Rides", url: "/sales/test-rides", icon: Bike },
+            { title: "Leads", url: "/crm", icon: Users },
+          ],
+        },
+      ];
+
+    case UserRole.SERVICE_MANAGER:
+      return [
+        {
+          label: "Service",
+          items: [
+            { title: "Job Cards", url: "/service/job-cards", icon: ClipboardList, badge: "8" },
+            { title: "Warranty", url: "/warranty", icon: Shield },
+            { title: "Spare Requests", url: "/spares", icon: Package },
+            { title: "Battery Health", url: "/service/battery-health", icon: Battery },
+          ],
+        },
+      ];
+
+    case UserRole.TECHNICIAN:
+      return [
+        {
+          label: "My Work",
+          items: [
+            { title: "My Jobs", url: "/service/job-cards", icon: Wrench },
+          ],
+        },
+      ];
+
+    case UserRole.CRM_EXECUTIVE:
+      return [
+        {
+          label: "CRM",
+          items: [
+            { title: "Leads", url: "/crm", icon: Users },
+            { title: "Follow-ups", url: "/crm", icon: Phone },
+          ],
+        },
+      ];
+
+    case UserRole.FINANCE_EXECUTIVE:
+      return [
+        {
+          label: "Finance",
+          items: [
+            { title: "Receivables", url: "/finance", icon: IndianRupee },
+            { title: "Invoices", url: "/finance", icon: FileText },
+            { title: "GST Reports", url: "/finance", icon: BarChart3 },
+          ],
+        },
+      ];
+
+    case UserRole.CUSTOMER:
+      return [
+        {
+          label: "My Account",
+          items: [
+            { title: "My Bookings", url: "/sales/bookings", icon: Car },
+            { title: "Service History", url: "/service/history", icon: Wrench },
+          ],
+        },
+      ];
+
+    default:
+      return [];
+  }
+}
 
 const roleLabels: Record<string, string> = {
-  ho_super_admin: "HO Super Admin",
-  ho_sales_admin: "HO Sales Admin",
-  ho_service_admin: "HO Service Admin",
-  ho_finance_admin: "HO Finance Admin",
-  dealer_principal: "Dealer Principal",
-  dealer_sales_exec: "Sales Executive",
-  service_manager: "Service Manager",
-  technician: "Technician",
-  crm_executive: "CRM Executive",
-  finance_executive: "Finance Executive",
-  customer: "Customer",
+  [UserRole.HO_SUPER_ADMIN]: "HO Super Admin",
+  [UserRole.HO_SALES_ADMIN]: "HO Sales Admin",
+  [UserRole.HO_SERVICE_ADMIN]: "HO Service Admin",
+  [UserRole.HO_FINANCE_ADMIN]: "HO Finance Admin",
+  [UserRole.DEALER_PRINCIPAL]: "Dealer Principal",
+  [UserRole.DEALER_SALES_EXECUTIVE]: "Sales Executive",
+  [UserRole.SERVICE_MANAGER]: "Service Manager",
+  [UserRole.TECHNICIAN]: "Technician",
+  [UserRole.CRM_EXECUTIVE]: "CRM Executive",
+  [UserRole.FINANCE_EXECUTIVE]: "Finance Executive",
+  [UserRole.CUSTOMER]: "Customer",
 };
 
 export function AppSidebar() {
   const [location, setLocation] = useLocation();
-  const { user, isAuthenticated, canAccessModule, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const isActive = (url: string) => {
     if (url === "/") return location === "/";
@@ -141,16 +227,14 @@ export function AppSidebar() {
     setLocation("/login");
   };
 
-  const visibleGroups = navGroups.filter(group => 
-    isAuthenticated && canAccessModule(group.module)
-  );
+  const navGroups = user ? getRoleNavigation(user.role) : [];
 
   return (
     <Sidebar>
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary">
-            <AlertCircle className="h-5 w-5 text-primary-foreground" />
+            <Zap className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="flex flex-col">
             <span className="text-lg font-semibold tracking-tight">ZFORCE</span>
@@ -165,9 +249,9 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/")}>
-                  <Link href="/" data-testid="nav-dashboard">
+                  <Link href="/" data-testid="nav-home">
                     <LayoutDashboard className="h-4 w-4" />
-                    <span>Dashboard</span>
+                    <span>Home</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -177,17 +261,17 @@ export function AppSidebar() {
 
         <SidebarSeparator />
 
-        {visibleGroups.map((group) => (
+        {navGroups.map((group) => (
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem key={item.title + item.url}>
                     <SidebarMenuButton asChild isActive={isActive(item.url)}>
                       <Link 
                         href={item.url} 
-                        data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                        data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '')}`}
                       >
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
