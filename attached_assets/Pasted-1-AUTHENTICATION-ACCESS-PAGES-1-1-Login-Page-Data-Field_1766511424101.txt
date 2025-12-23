@@ -1,0 +1,624 @@
+1. AUTHENTICATION & ACCESS PAGES
+1.1 Login Page
+
+Data / Fields
+
+Username / Email
+
+Password
+
+Role Selector (HO / Dealer / Technician)
+
+Device ID
+
+IP Address
+
+CAPTCHA
+
+Login Timestamp
+
+Failed Attempt Count
+
+Logic
+
+Role-based redirection
+
+Session token generation
+
+Audit log entry
+
+1.2 OTP Verification
+
+Data
+
+User ID
+
+OTP Code
+
+OTP Expiry
+
+Channel (SMS / WhatsApp / Email)
+
+Retry Count
+
+1.3 Forgot Password
+
+Data
+
+Registered Mobile / Email
+
+OTP
+
+New Password (hashed)
+
+Password Change Timestamp
+
+2. DASHBOARD PAGES
+2.1 HO Dashboard
+
+KPIs
+
+Total Dealers (Active / Inactive)
+
+Total Vehicles Sold (MTD / YTD)
+
+Pending Deliveries
+
+Pending Warranty Claims
+
+Revenue Summary
+
+Top Performing Dealers
+
+Bottom Performing Dealers
+
+Charts
+
+Monthly Retail Trend
+
+Service Load Trend
+
+Warranty TAT Chart
+
+Dealer Heatmap (Geo)
+
+Tables
+
+Dealer-wise Summary
+
+SLA Breach List
+
+Stock Shortage Alerts
+
+2.2 Dealer Dashboard
+
+KPIs
+
+Bookings Today / MTD
+
+Pending Deliveries
+
+Service Jobs Open
+
+Spare Parts Pending
+
+Outstanding Receivables
+
+Lists
+
+Today’s Deliveries
+
+Today’s Follow-ups
+
+Escalations from HO
+
+2.3 Service Dashboard
+
+KPIs
+
+Job Cards Open / Closed
+
+Avg Service TAT
+
+Warranty Jobs
+
+Technician Utilization %
+
+Lists
+
+Vehicles in Workshop
+
+Pending Parts
+
+SLA Violations
+
+3. SALES MODULE PAGES
+3.1 Booking Entry Page
+
+Customer Data
+
+Full Name
+
+Mobile Number
+
+Email
+
+Address
+
+ID Proof (Aadhar / PAN)
+
+KYC Uploads
+
+Vehicle Data
+
+Model
+
+Variant
+
+Color
+
+Battery Type
+
+Ex-Showroom Price
+
+Payment Data
+
+Booking Amount
+
+Payment Mode
+
+Receipt Number
+
+Status
+
+Booking Date
+
+Expected Delivery Date
+
+Booking Status
+
+3.2 Delivery Page
+
+Data
+
+Booking ID
+
+VIN Number
+
+Battery Serial No
+
+Charger Serial No
+
+Insurance Details
+
+Registration Number
+
+Delivery Date
+
+Checklist
+
+PDI Status
+
+Accessories Delivered
+
+Documents Handed Over
+
+Customer Signature (Digital)
+
+3.3 Stock Management
+
+Vehicle Stock
+
+VIN
+
+Model
+
+Variant
+
+Color
+
+Location
+
+Status (In Stock / Allocated / Delivered)
+
+Logs
+
+Stock In Date
+
+Stock Out Date
+
+Transfer History
+
+3.4 Test Ride Logbook
+
+Data
+
+Customer Name
+
+Contact
+
+Vehicle Model
+
+Test Ride Date & Time
+
+Feedback
+
+Salesperson Name
+
+Conversion Status
+
+4. SERVICE MODULE PAGES
+4.1 Job Card Creation
+
+Vehicle Info
+
+Registration No
+
+VIN
+
+Battery Serial
+
+Odometer Reading
+
+Customer Complaint
+
+Complaint Type
+
+Description
+
+Priority
+
+Service Data
+
+Job Card No
+
+Technician Assigned
+
+Estimated Cost
+
+Estimated TAT
+
+4.2 Service History Page
+
+Data
+
+All Job Cards (Chronological)
+
+Parts Used
+
+Labor Charges
+
+Warranty / Paid Flag
+
+Customer Feedback
+
+Closure Date
+
+4.3 Battery Health Records
+
+Data
+
+VIN
+
+Battery ID
+
+SOH %
+
+Charge Cycles
+
+Temperature Logs
+
+Error Codes
+
+Warranty Status
+
+4.4 Complaint Management
+
+Data
+
+Complaint ID
+
+Customer Details
+
+Complaint Category
+
+Resolution Status
+
+Escalation Level
+
+Closure Notes
+
+5. SPARE PARTS MODULE
+5.1 Inventory Page
+
+Part Data
+
+Part Code
+
+Part Name
+
+Category
+
+Current Stock
+
+Minimum Stock Level
+
+Location (BIN)
+
+Status
+
+Fast / Slow / Non-Moving
+
+Last Issued Date
+
+5.2 GRN Page
+
+Data
+
+GRN Number
+
+Supplier / HO
+
+Part List
+
+Quantity Received
+
+Damage Qty
+
+Received Date
+
+5.3 Spare Order Page
+
+Data
+
+Order ID
+
+Dealer Name
+
+Part List
+
+Requested Qty
+
+Approved Qty
+
+Dispatch Status
+
+5.4 Damage & Loss Log
+
+Data
+
+Part Code
+
+Reason (Transit / Handling / Theft)
+
+Quantity
+
+Photo Evidence
+
+Approval Status
+
+6. WARRANTY & CLAIMS MODULE
+6.1 Warranty Claim Submission
+
+Claim Data
+
+Job Card ID
+
+VIN
+
+Part Code
+
+Failure Description
+
+Photo / Video Upload
+
+Meta
+
+Claim Date
+
+Dealer ID
+
+Technician Name
+
+6.2 Warranty Approval Page (HO)
+
+Data
+
+Claim ID
+
+Dealer History
+
+Part Failure Trend
+
+SLA Timer
+
+Actions
+
+Approve
+
+Reject
+
+Request More Info
+
+6.3 Rejection Analysis
+
+Data
+
+Rejection Reason Code
+
+Dealer-wise Rejection %
+
+Part-wise Failure %
+
+7. CRM & LEAD MANAGEMENT
+7.1 Lead Listing Page
+
+Lead Data
+
+Lead Source (Meta / Google / Website / WhatsApp)
+
+Customer Name
+
+Mobile
+
+City
+
+Model Interested
+
+Status
+
+Funnel Stage (C0–C4)
+
+Assigned Dealer
+
+Follow-up Date
+
+7.2 Follow-Up Page
+
+Data
+
+Call Logs
+
+WhatsApp Messages
+
+Notes
+
+Next Follow-up Date
+
+Outcome
+
+7.3 Lost Sales Page
+
+Data
+
+Lead ID
+
+Lost Reason
+
+Competitor Name
+
+Price Gap
+
+Dealer Remarks
+
+8. FINANCE & MIS
+8.1 Dealer Summary
+
+Financial Data
+
+Vehicles Sold
+
+Gross Margin
+
+Incentive Earned
+
+Incentive Paid
+
+Outstanding Amount
+
+8.2 Receivables Page
+
+Data
+
+Dealer Name
+
+Invoice No
+
+Invoice Date
+
+Due Date
+
+Amount Pending
+
+Aging Bucket
+
+8.3 GST Reports
+
+Data
+
+GSTIN
+
+Invoice Details
+
+Taxable Value
+
+CGST / SGST / IGST
+
+Export Options (Excel / PDF)
+
+9. ADMIN / HEAD OFFICE PAGES
+9.1 Dealer Management
+
+Dealer Profile
+
+Dealer Code
+
+Address
+
+GSTIN
+
+Bank Details
+
+Agreement Status
+
+9.2 User & Role Management
+
+User Data
+
+Name
+
+Role
+
+Dealer Mapping
+
+Permissions Matrix
+
+Last Login
+
+9.3 System Configuration
+
+Masters
+
+Vehicle Models
+
+Parts Master
+
+Complaint Codes
+
+Warranty Rules
+
+SLA Timers
+
+10. AUDIT & LOGGING (CRITICAL)
+Audit Log Page
+
+Data
+
+User ID
+
+Action Performed
+
+Page Name
+
+Timestamp
+
+Old vs New Value
+
+IP Address
+
+FINAL TRUTH
+
+This is enterprise DMS level, not a startup demo.
+If someone can’t build this cleanly, they shouldn’t touch EV operations.
+
+What I can do next (pick one):
+
+Convert this into DB schema (tables + relations)
+
+Generate API contracts (request/response JSON)
+
+Build React pages with dummy data
+
+Create HO-ready PPT / BRD / SRS
+
+Say the number.

@@ -59,7 +59,7 @@ export const bookings = pgTable("bookings", {
   kycStatus: text("kyc_status").default("pending"),
 });
 
-export const insertBookingSchema = createInsertSchema(bookings).omit({ id: true, createdAt: true });
+export const insertBookingSchema = createInsertSchema(bookings).omit({ id: true, createdAt: true, bookingNumber: true });
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
 export type Booking = typeof bookings.$inferSelect;
 
@@ -84,7 +84,7 @@ export const jobCards = pgTable("job_cards", {
   priority: text("priority").default("normal"),
 });
 
-export const insertJobCardSchema = createInsertSchema(jobCards).omit({ id: true, createdAt: true });
+export const insertJobCardSchema = createInsertSchema(jobCards).omit({ id: true, createdAt: true, jobNumber: true });
 export type InsertJobCard = z.infer<typeof insertJobCardSchema>;
 export type JobCard = typeof jobCards.$inferSelect;
 
