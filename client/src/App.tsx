@@ -15,8 +15,15 @@ import Dashboard from "@/pages/dashboard";
 import BookingsPage from "@/pages/sales/bookings";
 import DeliveriesPage from "@/pages/sales/deliveries";
 import StockPage from "@/pages/sales/stock";
+import TestRidesPage from "@/pages/sales/test-rides";
 import JobCardsPage from "@/pages/service/job-cards";
 import ServiceHistoryPage from "@/pages/service/history";
+import ComplaintsPage from "@/pages/service/complaints";
+import BatteryHealthPage from "@/pages/service/battery-health";
+import LeadsPage from "@/pages/crm/leads";
+import SpareInventoryPage from "@/pages/spares/inventory";
+import WarrantyClaimsPage from "@/pages/warranty/claims";
+import LoginPage from "@/pages/auth/login";
 import PlaceholderPage from "@/pages/placeholder";
 import NotFound from "@/pages/not-found";
 
@@ -24,20 +31,18 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/login" component={LoginPage} />
       <Route path="/sales/bookings" component={BookingsPage} />
       <Route path="/sales/deliveries" component={DeliveriesPage} />
       <Route path="/sales/stock" component={StockPage} />
+      <Route path="/sales/test-rides" component={TestRidesPage} />
       <Route path="/service/job-cards" component={JobCardsPage} />
       <Route path="/service/history" component={ServiceHistoryPage} />
-      <Route path="/spares">
-        {() => <PlaceholderPage title="Spare Parts" description="Manage spare parts inventory, orders, and stock analysis." />}
-      </Route>
-      <Route path="/warranty">
-        {() => <PlaceholderPage title="Warranty Claims" description="Track and manage warranty claims and approvals." />}
-      </Route>
-      <Route path="/crm">
-        {() => <PlaceholderPage title="CRM & Leads" description="Manage leads, follow-ups, and sales funnel." />}
-      </Route>
+      <Route path="/service/complaints" component={ComplaintsPage} />
+      <Route path="/service/battery-health" component={BatteryHealthPage} />
+      <Route path="/spares" component={SpareInventoryPage} />
+      <Route path="/warranty" component={WarrantyClaimsPage} />
+      <Route path="/crm" component={LeadsPage} />
       <Route path="/finance">
         {() => <PlaceholderPage title="Finance & MIS" description="View financial reports, incentives, and analytics." />}
       </Route>

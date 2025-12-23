@@ -4,8 +4,15 @@ import {
   type JobCard, type InsertJobCard,
   type Inventory, type InsertInventory,
   type Dealer, type InsertDealer,
+  type Lead, type InsertLead,
+  type TestRide, type InsertTestRide,
+  type Complaint, type InsertComplaint,
+  type Spare, type InsertSpare,
+  type WarrantyClaim, type InsertWarrantyClaim,
+  type BatteryHealth, type InsertBatteryHealth,
   type DashboardStats, type SalesTrend, type ServiceMetrics,
-  users, bookings, jobCards, inventory, dealers
+  users, bookings, jobCards, inventory, dealers,
+  leads, testRides, complaints, spares, warrantyClaims, batteryHealth
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, or, sql, count } from "drizzle-orm";
@@ -37,6 +44,35 @@ export interface IStorage {
   getDealers(): Promise<Dealer[]>;
   getDealer(id: string): Promise<Dealer | undefined>;
   createDealer(dealer: InsertDealer): Promise<Dealer>;
+  
+  getLeads(): Promise<Lead[]>;
+  getLead(id: string): Promise<Lead | undefined>;
+  createLead(lead: InsertLead): Promise<Lead>;
+  updateLead(id: string, lead: Partial<InsertLead>): Promise<Lead | undefined>;
+  
+  getTestRides(): Promise<TestRide[]>;
+  getTestRide(id: string): Promise<TestRide | undefined>;
+  createTestRide(testRide: InsertTestRide): Promise<TestRide>;
+  updateTestRide(id: string, testRide: Partial<InsertTestRide>): Promise<TestRide | undefined>;
+  
+  getComplaints(): Promise<Complaint[]>;
+  getComplaint(id: string): Promise<Complaint | undefined>;
+  createComplaint(complaint: InsertComplaint): Promise<Complaint>;
+  updateComplaint(id: string, complaint: Partial<InsertComplaint>): Promise<Complaint | undefined>;
+  
+  getSpares(): Promise<Spare[]>;
+  getSpare(id: string): Promise<Spare | undefined>;
+  createSpare(spare: InsertSpare): Promise<Spare>;
+  updateSpare(id: string, spare: Partial<InsertSpare>): Promise<Spare | undefined>;
+  
+  getWarrantyClaims(): Promise<WarrantyClaim[]>;
+  getWarrantyClaim(id: string): Promise<WarrantyClaim | undefined>;
+  createWarrantyClaim(claim: InsertWarrantyClaim): Promise<WarrantyClaim>;
+  updateWarrantyClaim(id: string, claim: Partial<InsertWarrantyClaim>): Promise<WarrantyClaim | undefined>;
+  
+  getBatteryHealthRecords(): Promise<BatteryHealth[]>;
+  getBatteryHealth(id: string): Promise<BatteryHealth | undefined>;
+  createBatteryHealth(record: InsertBatteryHealth): Promise<BatteryHealth>;
   
   getDashboardStats(): Promise<DashboardStats>;
   getSalesTrend(): Promise<SalesTrend[]>;
@@ -157,6 +193,123 @@ export class DatabaseStorage implements IStorage {
   async createDealer(insertDealer: InsertDealer): Promise<Dealer> {
     const [dealer] = await db.insert(dealers).values(insertDealer).returning();
     return dealer;
+  }
+
+  async getLeads(): Promise<Lead[]> {
+    return db.select().from(leads).orderBy(desc(leads.createdAt));
+  }
+
+  async getLead(id: string): Promise<Lead | undefined> {
+    const [lead] = await db.select().from(leads).where(eq(leads.id, id));
+    return lead;
+  }
+
+  async createLead(insertLead: InsertLead): Promise<Lead> {
+    const [lead] = await db.insert(leads).values(insertLead).returning();
+    return lead;
+  }
+
+  async updateLead(id: string, updates: Partial<InsertLead>): Promise<Lead | undefined> {
+    const [lead] = await db.update(leads).set(updates).where(eq(leads.id, id)).returning();
+    return lead;
+  }
+
+  async getTestRides(): Promise<TestRide[]> {
+    return db.select().from(testRides).orderBy(desc(testRides.createdAt));
+  }
+
+  async getTestRide(id: string): Promise<TestRide | undefined> {
+    const [testRide] = await db.select().from(testRides).where(eq(testRides.id, id));
+    return testRide;
+  }
+
+  async createTestRide(insertTestRide: InsertTestRide): Promise<TestRide> {
+    const [testRide] = await db.insert(testRides).values(insertTestRide).returning();
+    return testRide;
+  }
+
+  async updateTestRide(id: string, updates: Partial<InsertTestRide>): Promise<TestRide | undefined> {
+    const [testRide] = await db.update(testRides).set(updates).where(eq(testRides.id, id)).returning();
+    return testRide;
+  }
+
+  async getComplaints(): Promise<Complaint[]> {
+    return db.select().from(complaints).orderBy(desc(complaints.createdAt));
+  }
+
+  async getComplaint(id: string): Promise<Complaint | undefined> {
+    const [complaint] = await db.select().from(complaints).where(eq(complaints.id, id));
+    return complaint;
+  }
+
+  async createComplaint(insertComplaint: InsertComplaint): Promise<Complaint> {
+    const complaintNumber = `CMP-${Date.now().toString().slice(-6)}`;
+    const [complaint] = await db.insert(complaints).values({
+      ...insertComplaint,
+      complaintNumber,
+    }).returning();
+    return complaint;
+  }
+
+  async updateComplaint(id: string, updates: Partial<InsertComplaint>): Promise<Complaint | undefined> {
+    const [complaint] = await db.update(complaints).set(updates).where(eq(complaints.id, id)).returning();
+    return complaint;
+  }
+
+  async getSpares(): Promise<Spare[]> {
+    return db.select().from(spares);
+  }
+
+  async getSpare(id: string): Promise<Spare | undefined> {
+    const [spare] = await db.select().from(spares).where(eq(spares.id, id));
+    return spare;
+  }
+
+  async createSpare(insertSpare: InsertSpare): Promise<Spare> {
+    const [spare] = await db.insert(spares).values(insertSpare).returning();
+    return spare;
+  }
+
+  async updateSpare(id: string, updates: Partial<InsertSpare>): Promise<Spare | undefined> {
+    const [spare] = await db.update(spares).set(updates).where(eq(spares.id, id)).returning();
+    return spare;
+  }
+
+  async getWarrantyClaims(): Promise<WarrantyClaim[]> {
+    return db.select().from(warrantyClaims).orderBy(desc(warrantyClaims.createdAt));
+  }
+
+  async getWarrantyClaim(id: string): Promise<WarrantyClaim | undefined> {
+    const [claim] = await db.select().from(warrantyClaims).where(eq(warrantyClaims.id, id));
+    return claim;
+  }
+
+  async createWarrantyClaim(insertClaim: InsertWarrantyClaim): Promise<WarrantyClaim> {
+    const claimNumber = `WC-${Date.now().toString().slice(-6)}`;
+    const [claim] = await db.insert(warrantyClaims).values({
+      ...insertClaim,
+      claimNumber,
+    }).returning();
+    return claim;
+  }
+
+  async updateWarrantyClaim(id: string, updates: Partial<InsertWarrantyClaim>): Promise<WarrantyClaim | undefined> {
+    const [claim] = await db.update(warrantyClaims).set(updates).where(eq(warrantyClaims.id, id)).returning();
+    return claim;
+  }
+
+  async getBatteryHealthRecords(): Promise<BatteryHealth[]> {
+    return db.select().from(batteryHealth);
+  }
+
+  async getBatteryHealth(id: string): Promise<BatteryHealth | undefined> {
+    const [record] = await db.select().from(batteryHealth).where(eq(batteryHealth.id, id));
+    return record;
+  }
+
+  async createBatteryHealth(insertRecord: InsertBatteryHealth): Promise<BatteryHealth> {
+    const [record] = await db.insert(batteryHealth).values(insertRecord).returning();
+    return record;
   }
 
   async getDashboardStats(): Promise<DashboardStats> {

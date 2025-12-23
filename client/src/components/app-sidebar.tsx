@@ -15,6 +15,9 @@ import {
   ClipboardList,
   AlertCircle,
   UserCog,
+  Bike,
+  Battery,
+  MessageSquare,
 } from "lucide-react";
 import {
   Sidebar,
@@ -56,6 +59,11 @@ const salesItems = [
     url: "/sales/stock",
     icon: Car,
   },
+  {
+    title: "Test Rides",
+    url: "/sales/test-rides",
+    icon: Bike,
+  },
 ];
 
 const serviceItems = [
@@ -69,6 +77,16 @@ const serviceItems = [
     title: "Service History",
     url: "/service/history",
     icon: Wrench,
+  },
+  {
+    title: "Battery Health",
+    url: "/service/battery-health",
+    icon: Battery,
+  },
+  {
+    title: "Complaints",
+    url: "/service/complaints",
+    icon: MessageSquare,
   },
 ];
 

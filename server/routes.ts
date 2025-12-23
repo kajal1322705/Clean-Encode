@@ -225,5 +225,173 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/leads", async (_req, res) => {
+    try {
+      const leads = await storage.getLeads();
+      res.json(leads);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch leads" });
+    }
+  });
+
+  app.post("/api/leads", async (req, res) => {
+    try {
+      const lead = await storage.createLead(req.body);
+      res.status(201).json(lead);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create lead" });
+    }
+  });
+
+  app.patch("/api/leads/:id", async (req, res) => {
+    try {
+      const lead = await storage.updateLead(req.params.id, req.body);
+      if (!lead) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+      res.json(lead);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update lead" });
+    }
+  });
+
+  app.get("/api/test-rides", async (_req, res) => {
+    try {
+      const testRides = await storage.getTestRides();
+      res.json(testRides);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch test rides" });
+    }
+  });
+
+  app.post("/api/test-rides", async (req, res) => {
+    try {
+      const testRide = await storage.createTestRide(req.body);
+      res.status(201).json(testRide);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create test ride" });
+    }
+  });
+
+  app.patch("/api/test-rides/:id", async (req, res) => {
+    try {
+      const testRide = await storage.updateTestRide(req.params.id, req.body);
+      if (!testRide) {
+        return res.status(404).json({ error: "Test ride not found" });
+      }
+      res.json(testRide);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update test ride" });
+    }
+  });
+
+  app.get("/api/complaints", async (_req, res) => {
+    try {
+      const complaints = await storage.getComplaints();
+      res.json(complaints);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch complaints" });
+    }
+  });
+
+  app.post("/api/complaints", async (req, res) => {
+    try {
+      const complaint = await storage.createComplaint(req.body);
+      res.status(201).json(complaint);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create complaint" });
+    }
+  });
+
+  app.patch("/api/complaints/:id", async (req, res) => {
+    try {
+      const complaint = await storage.updateComplaint(req.params.id, req.body);
+      if (!complaint) {
+        return res.status(404).json({ error: "Complaint not found" });
+      }
+      res.json(complaint);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update complaint" });
+    }
+  });
+
+  app.get("/api/spares", async (_req, res) => {
+    try {
+      const spares = await storage.getSpares();
+      res.json(spares);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch spare parts" });
+    }
+  });
+
+  app.post("/api/spares", async (req, res) => {
+    try {
+      const spare = await storage.createSpare(req.body);
+      res.status(201).json(spare);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create spare part" });
+    }
+  });
+
+  app.patch("/api/spares/:id", async (req, res) => {
+    try {
+      const spare = await storage.updateSpare(req.params.id, req.body);
+      if (!spare) {
+        return res.status(404).json({ error: "Spare part not found" });
+      }
+      res.json(spare);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update spare part" });
+    }
+  });
+
+  app.get("/api/warranty-claims", async (_req, res) => {
+    try {
+      const claims = await storage.getWarrantyClaims();
+      res.json(claims);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch warranty claims" });
+    }
+  });
+
+  app.post("/api/warranty-claims", async (req, res) => {
+    try {
+      const claim = await storage.createWarrantyClaim(req.body);
+      res.status(201).json(claim);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create warranty claim" });
+    }
+  });
+
+  app.patch("/api/warranty-claims/:id", async (req, res) => {
+    try {
+      const claim = await storage.updateWarrantyClaim(req.params.id, req.body);
+      if (!claim) {
+        return res.status(404).json({ error: "Warranty claim not found" });
+      }
+      res.json(claim);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update warranty claim" });
+    }
+  });
+
+  app.get("/api/battery-health", async (_req, res) => {
+    try {
+      const records = await storage.getBatteryHealthRecords();
+      res.json(records);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch battery health records" });
+    }
+  });
+
+  app.post("/api/battery-health", async (req, res) => {
+    try {
+      const record = await storage.createBatteryHealth(req.body);
+      res.status(201).json(record);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create battery health record" });
+    }
+  });
+
   return httpServer;
 }

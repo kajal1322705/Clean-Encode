@@ -162,6 +162,118 @@ export const insertLeadSchema = createInsertSchema(leads).omit({ id: true, creat
 export type InsertLead = z.infer<typeof insertLeadSchema>;
 export type Lead = typeof leads.$inferSelect;
 
+export const testRides = pgTable("test_rides", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerName: text("customer_name").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  vehicleModel: text("vehicle_model").notNull(),
+  scheduledDate: timestamp("scheduled_date").notNull(),
+  status: text("status").notNull().default("scheduled"),
+  salesperson: text("salesperson"),
+  feedback: text("feedback"),
+  conversionStatus: text("conversion_status").default("pending"),
+  dealerId: varchar("dealer_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertTestRideSchema = createInsertSchema(testRides).omit({ id: true, createdAt: true });
+export type InsertTestRide = z.infer<typeof insertTestRideSchema>;
+export type TestRide = typeof testRides.$inferSelect;
+
+export const deliveries = pgTable("deliveries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  bookingId: varchar("booking_id").notNull(),
+  vin: text("vin").notNull(),
+  batterySerial: text("battery_serial"),
+  chargerSerial: text("charger_serial"),
+  insuranceDetails: text("insurance_details"),
+  registrationNumber: text("registration_number"),
+  deliveryDate: timestamp("delivery_date"),
+  pdiStatus: text("pdi_status").default("pending"),
+  accessoriesDelivered: boolean("accessories_delivered").default(false),
+  documentsHandedOver: boolean("documents_handed_over").default(false),
+  customerSignature: text("customer_signature"),
+  status: text("status").notNull().default("pending"),
+  dealerId: varchar("dealer_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertDeliverySchema = createInsertSchema(deliveries).omit({ id: true, createdAt: true });
+export type InsertDelivery = z.infer<typeof insertDeliverySchema>;
+export type Delivery = typeof deliveries.$inferSelect;
+
+export const complaints = pgTable("complaints", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  complaintNumber: text("complaint_number").notNull().unique(),
+  customerName: text("customer_name").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  vehicleNumber: text("vehicle_number"),
+  vin: text("vin"),
+  category: text("category").notNull(),
+  description: text("description").notNull(),
+  status: text("status").notNull().default("open"),
+  escalationLevel: integer("escalation_level").default(0),
+  assignedTo: varchar("assigned_to"),
+  resolution: text("resolution"),
+  closedAt: timestamp("closed_at"),
+  dealerId: varchar("dealer_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertComplaintSchema = createInsertSchema(complaints).omit({ id: true, createdAt: true, complaintNumber: true });
+export type InsertComplaint = z.infer<typeof insertComplaintSchema>;
+export type Complaint = typeof complaints.$inferSelect;
+
+export const grn = pgTable("grn", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  grnNumber: text("grn_number").notNull().unique(),
+  supplier: text("supplier").notNull(),
+  partsList: text("parts_list").notNull(),
+  quantityReceived: integer("quantity_received").notNull(),
+  damageQty: integer("damage_qty").default(0),
+  receivedDate: timestamp("received_date").defaultNow(),
+  status: text("status").notNull().default("received"),
+  dealerId: varchar("dealer_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertGrnSchema = createInsertSchema(grn).omit({ id: true, createdAt: true, grnNumber: true });
+export type InsertGrn = z.infer<typeof insertGrnSchema>;
+export type Grn = typeof grn.$inferSelect;
+
+export const spareOrders = pgTable("spare_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  orderNumber: text("order_number").notNull().unique(),
+  partsList: text("parts_list").notNull(),
+  requestedQty: integer("requested_qty").notNull(),
+  approvedQty: integer("approved_qty"),
+  status: text("status").notNull().default("pending"),
+  dispatchStatus: text("dispatch_status").default("pending"),
+  dealerId: varchar("dealer_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertSpareOrderSchema = createInsertSchema(spareOrders).omit({ id: true, createdAt: true, orderNumber: true });
+export type InsertSpareOrder = z.infer<typeof insertSpareOrderSchema>;
+export type SpareOrder = typeof spareOrders.$inferSelect;
+
+export const batteryHealth = pgTable("battery_health", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  vin: text("vin").notNull(),
+  batteryId: text("battery_id").notNull(),
+  sohPercent: integer("soh_percent"),
+  chargeCycles: integer("charge_cycles"),
+  temperatureLog: text("temperature_log"),
+  errorCodes: text("error_codes"),
+  warrantyStatus: text("warranty_status").default("active"),
+  lastChecked: timestamp("last_checked").defaultNow(),
+  dealerId: varchar("dealer_id").notNull(),
+});
+
+export const insertBatteryHealthSchema = createInsertSchema(batteryHealth).omit({ id: true });
+export type InsertBatteryHealth = z.infer<typeof insertBatteryHealthSchema>;
+export type BatteryHealth = typeof batteryHealth.$inferSelect;
+
 export interface DashboardStats {
   totalBookings: number;
   pendingDeliveries: number;
