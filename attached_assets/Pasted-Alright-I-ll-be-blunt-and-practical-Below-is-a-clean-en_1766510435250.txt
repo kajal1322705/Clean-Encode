@@ -1,0 +1,319 @@
+Alright. I’ll be blunt and practical.
+Below is a **clean, enterprise-grade page structure + layout system using reusable components** for **ZFORCE DMS**. This is exactly how a serious EV DMS should be built—not a bloated mess.
+
+---
+
+# ZFORCE DMS – Page Architecture & Reusable Component System
+
+## 1. TECH STACK (SUGGESTED – NO FLUFF)
+
+* **Frontend**: React + TypeScript
+* **Routing**: React Router
+* **UI**: Tailwind / MUI (pick one, don’t mix)
+* **State**: Redux Toolkit / Zustand
+* **Charts**: Recharts
+* **Auth**: JWT + RBAC
+* **API**: REST (later GraphQL if needed)
+
+---
+
+## 2. MASTER LAYOUT STRUCTURE (CORE)
+
+### App Layout (Reusable)
+
+```
+<AppLayout>
+ ├─ <Sidebar />
+ ├─ <TopBar />
+ ├─ <Breadcrumbs />
+ ├─ <MainContent />  ← Routed Pages
+ └─ <Footer />
+</AppLayout>
+```
+
+### Role-Based Layout Wrappers
+
+```
+<HOLayout />
+<DealerLayout />
+<TechnicianLayout />
+<CustomerLayout /> (optional)
+```
+
+---
+
+## 3. GLOBAL REUSABLE COMPONENTS (USED EVERYWHERE)
+
+### UI Components
+
+* `<Button />`
+* `<Input />`
+* `<Select />`
+* `<DatePicker />`
+* `<Modal />`
+* `<Drawer />`
+* `<Tabs />`
+* `<Badge />`
+* `<StatusChip />`
+* `<Loader />`
+* `<ConfirmDialog />`
+
+### Data Components
+
+* `<DataTable />`
+* `<Pagination />`
+* `<SearchBar />`
+* `<FilterPanel />`
+* `<ExportButton />`
+
+### Utility
+
+* `<RoleGuard />`
+* `<PermissionGate />`
+* `<ErrorBoundary />`
+* `<EmptyState />`
+
+---
+
+## 4. PAGE-WISE MODULE BREAKDOWN
+
+---
+
+## 4.1 DASHBOARD (HO / Dealer / Service)
+
+### Pages
+
+```
+/dashboard
+/dashboard/sales
+/dashboard/service
+/dashboard/finance
+```
+
+### Components
+
+* `<KPICard />`
+* `<TrendChart />`
+* `<DealerHeatMap />`
+* `<PendingTasks />`
+* `<QuickActions />`
+
+---
+
+## 4.2 SALES MODULE – EV RETAIL ENGINE
+
+### Pages
+
+```
+/sales/bookings
+/sales/deliveries
+/sales/stock
+/sales/orders
+/sales/test-rides
+/sales/vin-tracking
+```
+
+### Reusable Components
+
+* `<BookingForm />`
+* `<DeliveryChecklist />`
+* `<StockTable />`
+* `<VINAllocator />`
+* `<KYCUpload />`
+* `<PendingDeliveryBoard />`
+
+---
+
+## 4.3 SERVICE MODULE – AFTER SALES
+
+### Pages
+
+```
+/service/job-cards
+/service/complaints
+/service/maintenance
+/service/battery-health
+/service/history
+```
+
+### Components
+
+* `<JobCardForm />`
+* `<QRIntakeScanner />`
+* `<ServiceTimeline />`
+* `<BatteryHealthCard />`
+* `<TechnicianPerformance />`
+* `<WhatsAppStatus />`
+
+---
+
+## 4.4 SPARE PARTS MODULE
+
+### Pages
+
+```
+/spares/inventory
+/spares/orders
+/spares/grn
+/spares/analysis
+/spares/damage-log
+```
+
+### Components
+
+* `<InventoryTable />`
+* `<MinStockAlert />`
+* `<BINMapper />`
+* `<FastSlowAnalysis />`
+* `<LossDamageForm />`
+
+---
+
+## 4.5 WARRANTY & CLAIMS
+
+### Pages
+
+```
+/warranty/claims
+/warranty/pending
+/warranty/approved
+/warranty/rejected
+```
+
+### Components
+
+* `<ClaimUpload />`
+* `<MediaViewer />`
+* `<SLAClock />`
+* `<ApprovalWorkflow />`
+* `<RejectionReason />`
+
+---
+
+## 4.6 CRM & LEAD MANAGEMENT
+
+### Pages
+
+```
+/crm/leads
+/crm/follow-ups
+/crm/funnel
+/crm/lost-sales
+```
+
+### Components
+
+* `<LeadCard />`
+* `<LeadSourceBadge />`
+* `<FollowUpScheduler />`
+* `<WhatsAppAutomation />`
+* `<LeadFunnelChart />`
+
+---
+
+## 4.7 FINANCE & MIS
+
+### Pages
+
+```
+/finance/summary
+/finance/incentives
+/finance/receivables
+/finance/gst
+```
+
+### Components
+
+* `<DealerSummary />`
+* `<RetailTrendChart />`
+* `<OutstandingTable />`
+* `<GSTReportExport />`
+
+---
+
+## 5. ADMIN & HEAD OFFICE CONTROL
+
+### Pages
+
+```
+/admin/dealers
+/admin/users
+/admin/roles
+/admin/config
+```
+
+### Components
+
+* `<DealerProfile />`
+* `<UserManagement />`
+* `<RoleMatrix />`
+* `<SystemSettings />`
+
+---
+
+## 6. AUTH & ACCESS
+
+### Pages
+
+```
+/login
+/otp
+/forgot-password
+```
+
+### Components
+
+* `<LoginForm />`
+* `<OTPInput />`
+* `<SessionTimeout />`
+
+---
+
+## 7. FOLDER STRUCTURE (NON-NEGOTIABLE)
+
+```
+src/
+ ├─ layouts/
+ ├─ pages/
+ │   ├─ dashboard/
+ │   ├─ sales/
+ │   ├─ service/
+ │   ├─ spares/
+ │   ├─ warranty/
+ │   ├─ crm/
+ │   ├─ finance/
+ │   ├─ admin/
+ ├─ components/
+ │   ├─ ui/
+ │   ├─ data/
+ │   ├─ forms/
+ │   ├─ charts/
+ ├─ services/
+ ├─ store/
+ ├─ hooks/
+ ├─ utils/
+```
+
+---
+
+## 8. WHY THIS WORKS (NO MARKETING BS)
+
+* Scales from **1 dealer → 500 dealers**
+* Clean RBAC separation (HO ≠ Dealer ≠ Technician)
+* Zero duplicate UI logic
+* Easy mobile app reuse
+* Enterprise-ready MIS
+* Future-proof for PAN-India rollout
+
+---
+
+## 9. NEXT STEP (REAL TALK)
+
+If you want, next I can:
+
+1. Generate **actual React code** for layouts + sidebar
+2. Build **one full module (Sales or Service)** end-to-end
+3. Create **API contracts (backend-ready)**
+4. Convert this into a **client-facing PPT / proposal deck**
+
+Say which one.
