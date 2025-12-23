@@ -313,16 +313,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDashboardStats(): Promise<DashboardStats> {
-    const allBookings = await db.select().from(bookings);
-    const allJobCards = await db.select().from(jobCards);
+    const allBookings: Booking[] = await db.select().from(bookings);
+    const allJobCards: JobCard[] = await db.select().from(jobCards);
     
     const totalBookings = allBookings.length;
-    const pendingDeliveries = allBookings.filter((b) => b.status === "confirmed").length;
-    const activeJobCards = allJobCards.filter((jc) => jc.status === "open" || jc.status === "in_progress").length;
+    const pendingDeliveries = allBookings.filter((b: Booking) => b.status === "confirmed").length;
+    const activeJobCards = allJobCards.filter((jc: JobCard) => jc.status === "open" || jc.status === "in_progress").length;
     
     const monthlyRevenue = allBookings
-      .filter((b) => b.status === "delivered")
-      .reduce((sum, b) => sum + (b.bookingAmount * 10), 0);
+      .filter((b: Booking) => b.status === "delivered")
+      .reduce((sum: number, b: Booking) => sum + (b.bookingAmount * 10), 0);
 
     return {
       totalBookings,
@@ -542,8 +542,7 @@ export class DatabaseStorage implements IStorage {
     // Seed leads
     await db.insert(leads).values([
       {
-        leadNumber: "LD-1001",
-        customerName: "Anil Kapoor",
+        name: "Anil Kapoor",
         phone: "9876543300",
         email: "anil@example.com",
         source: "walk_in",
@@ -552,8 +551,7 @@ export class DatabaseStorage implements IStorage {
         dealerId: dealer.id,
       },
       {
-        leadNumber: "LD-1002",
-        customerName: "Sunita Verma",
+        name: "Sunita Verma",
         phone: "9876543301",
         source: "website",
         interestedModel: "ZForce City",
@@ -654,18 +652,20 @@ export class DatabaseStorage implements IStorage {
     await db.insert(batteryHealth).values([
       {
         vin: "ZF2024X1PRO001234",
-        vehicleNumber: "MH 12 AB 1234",
-        healthPercentage: 92,
+        batteryId: "BAT-001-PRO",
+        sohPercent: 92,
         chargeCycles: 145,
         lastChecked: new Date(),
+        warrantyStatus: "active",
         dealerId: dealer.id,
       },
       {
         vin: "ZF2024X2MAX003456",
-        vehicleNumber: "MH 01 CD 5678",
-        healthPercentage: 68,
+        batteryId: "BAT-002-MAX",
+        sohPercent: 68,
         chargeCycles: 520,
         lastChecked: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        warrantyStatus: "expired",
         dealerId: dealer.id,
       },
     ]);

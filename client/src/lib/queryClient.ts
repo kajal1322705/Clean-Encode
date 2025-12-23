@@ -24,22 +24,46 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
-export const getQueryFn: <T>(options: {
+
+interface ApiResponse<T> {
+  success: boolean;
+  data: T | { data: T; total?: number; page?: number; totalPages?: number };
+  message?: string;
+  timestamp?: string;
+}
+
+function extractData<T>(response: unknown): T {
+  if (response && typeof response === "object" && "success" in response) {
+    const apiResponse = response as ApiResponse<T>;
+    if (apiResponse.success && apiResponse.data !== undefined) {
+      const data = apiResponse.data;
+      if (data && typeof data === "object" && "data" in data && Array.isArray((data as { data: unknown }).data)) {
+        return (data as { data: T }).data;
+      }
+      return data as T;
+    }
+  }
+  return response as T;
+}
+
+export function getQueryFn<T>(options: {
   on401: UnauthorizedBehavior;
-}) => QueryFunction<T> =
-  ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
+}): QueryFunction<T> {
+  const { on401: unauthorizedBehavior } = options;
+  return async ({ queryKey }) => {
     const res = await fetch(queryKey.join("/") as string, {
       credentials: "include",
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+      return null as T;
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+    const json = await res.json();
+    return extractData<T>(json);
   };
+}
 
 export const queryClient = new QueryClient({
   defaultOptions: {
