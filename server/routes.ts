@@ -9,6 +9,8 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   
+  await storage.seedData();
+  
   app.get("/api/dashboard/stats", async (_req, res) => {
     try {
       const stats = await storage.getDashboardStats();
