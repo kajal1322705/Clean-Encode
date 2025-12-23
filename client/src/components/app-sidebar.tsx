@@ -18,6 +18,8 @@ import {
   Bike,
   Battery,
   MessageSquare,
+  LogOut,
+  User,
 } from "lucide-react";
 import {
   Sidebar,
@@ -33,111 +35,115 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { Module, type ModuleType } from "@shared/schema";
 
-const mainNavItems = [
+interface NavItem {
+  title: string;
+  url: string;
+  icon: React.ElementType;
+  badge?: string;
+  module?: ModuleType;
+}
+
+interface NavGroup {
+  label: string;
+  module: ModuleType;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
   {
-    title: "Dashboard",
-    url: "/",
-    icon: LayoutDashboard,
+    label: "Sales",
+    module: Module.SALES,
+    items: [
+      { title: "Bookings", url: "/sales/bookings", icon: FileText, badge: "12" },
+      { title: "Deliveries", url: "/sales/deliveries", icon: Truck },
+      { title: "Stock", url: "/sales/stock", icon: Car },
+      { title: "Test Rides", url: "/sales/test-rides", icon: Bike },
+    ],
+  },
+  {
+    label: "Service",
+    module: Module.SERVICE,
+    items: [
+      { title: "Job Cards", url: "/service/job-cards", icon: ClipboardList, badge: "8" },
+      { title: "Service History", url: "/service/history", icon: Wrench },
+      { title: "Battery Health", url: "/service/battery-health", icon: Battery },
+      { title: "Complaints", url: "/service/complaints", icon: MessageSquare },
+    ],
+  },
+  {
+    label: "Spare Parts",
+    module: Module.SPARES,
+    items: [
+      { title: "Inventory", url: "/spares", icon: Package },
+    ],
+  },
+  {
+    label: "Warranty",
+    module: Module.WARRANTY,
+    items: [
+      { title: "Claims", url: "/warranty", icon: Shield },
+    ],
+  },
+  {
+    label: "CRM",
+    module: Module.CRM,
+    items: [
+      { title: "Leads", url: "/crm", icon: Users },
+    ],
+  },
+  {
+    label: "Finance",
+    module: Module.FINANCE,
+    items: [
+      { title: "Dashboard", url: "/finance", icon: BarChart3 },
+    ],
+  },
+  {
+    label: "Admin",
+    module: Module.ADMIN,
+    items: [
+      { title: "Dealers", url: "/admin/dealers", icon: Building2 },
+      { title: "Users", url: "/admin/users", icon: UserCog },
+      { title: "Settings", url: "/admin/settings", icon: Settings },
+    ],
   },
 ];
 
-const salesItems = [
-  {
-    title: "Bookings",
-    url: "/sales/bookings",
-    icon: FileText,
-    badge: "12",
-  },
-  {
-    title: "Deliveries",
-    url: "/sales/deliveries",
-    icon: Truck,
-  },
-  {
-    title: "Stock",
-    url: "/sales/stock",
-    icon: Car,
-  },
-  {
-    title: "Test Rides",
-    url: "/sales/test-rides",
-    icon: Bike,
-  },
-];
-
-const serviceItems = [
-  {
-    title: "Job Cards",
-    url: "/service/job-cards",
-    icon: ClipboardList,
-    badge: "8",
-  },
-  {
-    title: "Service History",
-    url: "/service/history",
-    icon: Wrench,
-  },
-  {
-    title: "Battery Health",
-    url: "/service/battery-health",
-    icon: Battery,
-  },
-  {
-    title: "Complaints",
-    url: "/service/complaints",
-    icon: MessageSquare,
-  },
-];
-
-const otherItems = [
-  {
-    title: "Spare Parts",
-    url: "/spares",
-    icon: Package,
-  },
-  {
-    title: "Warranty Claims",
-    url: "/warranty",
-    icon: Shield,
-  },
-  {
-    title: "CRM / Leads",
-    url: "/crm",
-    icon: Users,
-  },
-  {
-    title: "Finance & MIS",
-    url: "/finance",
-    icon: BarChart3,
-  },
-];
-
-const adminItems = [
-  {
-    title: "Dealers",
-    url: "/admin/dealers",
-    icon: Building2,
-  },
-  {
-    title: "Users",
-    url: "/admin/users",
-    icon: UserCog,
-  },
-  {
-    title: "Settings",
-    url: "/admin/settings",
-    icon: Settings,
-  },
-];
+const roleLabels: Record<string, string> = {
+  ho_super_admin: "HO Super Admin",
+  ho_sales_admin: "HO Sales Admin",
+  ho_service_admin: "HO Service Admin",
+  ho_finance_admin: "HO Finance Admin",
+  dealer_principal: "Dealer Principal",
+  dealer_sales_exec: "Sales Executive",
+  service_manager: "Service Manager",
+  technician: "Technician",
+  crm_executive: "CRM Executive",
+  finance_executive: "Finance Executive",
+  customer: "Customer",
+};
 
 export function AppSidebar() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { user, isAuthenticated, canAccessModule, logout } = useAuth();
 
   const isActive = (url: string) => {
     if (url === "/") return location === "/";
     return location.startsWith(url);
   };
+
+  const handleLogout = () => {
+    logout();
+    setLocation("/login");
+  };
+
+  const visibleGroups = navGroups.filter(group => 
+    isAuthenticated && canAccessModule(group.module)
+  );
 
   return (
     <Sidebar>
@@ -157,125 +163,83 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase()}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/")}>
+                  <Link href="/" data-testid="nav-dashboard">
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarSeparator />
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide text-muted-foreground">
-            Sales
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {salesItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="flex-1">{item.title}</span>
-                      {item.badge && (
-                        <Badge variant="secondary" className="text-xs">
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide text-muted-foreground">
-            Service
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {serviceItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="flex-1">{item.title}</span>
-                      {item.badge && (
-                        <Badge variant="secondary" className="text-xs">
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide text-muted-foreground">
-            Operations
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {otherItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide text-muted-foreground">
-            Admin
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {adminItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase()}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {visibleGroups.map((group) => (
+          <SidebarGroup key={group.label}>
+            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={isActive(item.url)}>
+                      <Link 
+                        href={item.url} 
+                        data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                        {item.badge && (
+                          <Badge variant="secondary" className="ml-auto">
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
       <SidebarFooter className="p-4">
-        <div className="flex items-center gap-3 rounded-md bg-sidebar-accent p-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-            JD
+        {isAuthenticated && user ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 rounded-md bg-sidebar-accent p-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                <User className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <span className="truncate text-sm font-medium">{user.name}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {roleLabels[user.role] || user.role}
+                </span>
+              </div>
+            </div>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start gap-2" 
+              onClick={handleLogout}
+              data-testid="button-logout"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
           </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium">John Dealer</span>
-            <span className="text-xs text-muted-foreground">Dealer Admin</span>
-          </div>
-        </div>
+        ) : (
+          <Button 
+            variant="default" 
+            className="w-full" 
+            onClick={() => setLocation("/login")}
+            data-testid="button-login"
+          >
+            Login
+          </Button>
+        )}
       </SidebarFooter>
     </Sidebar>
   );

@@ -1,0 +1,379 @@
+Good. This is the **right question**.
+A DMS without **hard role boundaries** turns into chaos fast.
+
+Below is a **role-based access + page content matrix** for **ZFORCE DMS**, showing **who can see what, who can add/edit what, and what data is hidden**. No overlap unless absolutely required.
+
+---
+
+# ZFORCE DMS – ROLE-BASED ACCESS & DATA CONTROL
+
+## CORE ROLES (NON-NEGOTIABLE)
+
+1. **HO Super Admin (ZForce HQ)**
+2. **HO Department Admin** (Sales / Service / Finance)
+3. **Dealer Principal**
+4. **Dealer Sales Executive**
+5. **Service Manager**
+6. **Technician**
+7. **CRM / Call Center**
+8. **Finance Executive**
+9. **Customer (Optional App)**
+
+---
+
+# 1. HO SUPER ADMIN (FULL CONTROL)
+
+### Access
+
+✔ ALL modules
+✔ ALL dealers
+✔ ALL historical data
+
+### Can ADD / EDIT
+
+* Dealers
+* Users & Roles
+* Pricing, Incentives
+* SLA rules
+* Warranty rules
+* Vehicle & Parts Masters
+
+### Pages Visible
+
+* HO Dashboard (global)
+* Sales / Service / Spares / Warranty (all dealers)
+* Finance & MIS
+* CRM Analytics
+* Audit Logs
+* System Configuration
+
+### Cannot
+
+❌ Perform dealer-level transactions (no bookings, no job cards)
+
+---
+
+# 2. HO DEPARTMENT ADMIN
+
+## 2.1 HO Sales Admin
+
+### Access
+
+* Sales dashboards (all dealers)
+* Bookings, Deliveries, VIN allocation
+* Dealer performance
+
+### Can ADD / EDIT
+
+* VIN allocation
+* Dealer order approvals
+* Incentives rules (sales only)
+
+### Cannot
+
+❌ Service job cards
+❌ Spare parts inventory
+❌ Financial ledgers
+
+---
+
+## 2.2 HO Service Admin
+
+### Access
+
+* Service dashboards
+* Warranty claims
+* Battery health analytics
+
+### Can ADD / EDIT
+
+* Warranty approvals / rejections
+* SLA timelines
+* Service SOPs
+
+### Cannot
+
+❌ Sales pricing
+❌ Dealer receivables
+
+---
+
+## 2.3 HO Finance Admin
+
+### Access
+
+* Finance dashboards
+* Dealer receivables
+* Incentives & payouts
+* GST reports
+
+### Can ADD / EDIT
+
+* Credit limits
+* Incentive disbursement
+* Financial approvals
+
+### Cannot
+
+❌ VIN allocation
+❌ Warranty approvals
+
+---
+
+# 3. DEALER PRINCIPAL (OWNER)
+
+### Access
+
+✔ FULL dealer view (own dealership only)
+
+### Pages
+
+* Dealer Dashboard
+* Sales
+* Service
+* Spares
+* CRM
+* Finance (summary only)
+* Staff performance
+
+### Can ADD / EDIT
+
+* Staff users
+* Bookings & deliveries
+* Dealer orders
+* Internal targets
+
+### Can VIEW (Read-Only)
+
+* Incentives
+* GST reports
+* HO communications
+
+### Cannot
+
+❌ Modify pricing
+❌ Approve warranty
+❌ Change SLA rules
+
+---
+
+# 4. DEALER SALES EXECUTIVE
+
+### Access
+
+* Sales module (own dealer)
+* CRM leads
+* Test rides
+
+### Pages
+
+* Booking Entry
+* Test Ride Logbook
+* Delivery status (view only)
+* Lead follow-ups
+
+### Can ADD
+
+* New bookings
+* Test ride entries
+* Customer follow-ups
+
+### Can EDIT
+
+* Booking details (before VIN allocation)
+
+### Cannot
+
+❌ VIN allocation
+❌ Delivery approval
+❌ Finance data
+
+---
+
+# 5. SERVICE MANAGER (DEALER)
+
+### Access
+
+* Service module
+* Warranty submission
+* Technician performance
+* Spare requests
+
+### Pages
+
+* Job Cards
+* Complaint management
+* Battery health
+* Service dashboard
+
+### Can ADD / EDIT
+
+* Job cards
+* Technician assignment
+* Warranty claim submission
+
+### Can VIEW
+
+* Spare inventory
+* Warranty status
+
+### Cannot
+
+❌ Approve warranty
+❌ Edit financials
+
+---
+
+# 6. TECHNICIAN
+
+### Access (Mobile App)
+
+* Assigned job cards only
+
+### Pages
+
+* My Jobs
+* Vehicle details
+* Repair checklist
+
+### Can ADD
+
+* Work performed
+* Photos/videos
+* Part consumption
+* Closure notes
+
+### Cannot
+
+❌ Edit job card basics
+❌ See pricing
+❌ See customer financial data
+
+---
+
+# 7. CRM / CALL CENTER EXECUTIVE
+
+### Access
+
+* CRM module only
+
+### Pages
+
+* Lead listing
+* Follow-ups
+* Funnel dashboard
+
+### Can ADD
+
+* New leads
+* Call logs
+* Follow-up schedules
+
+### Can EDIT
+
+* Lead status (C0–C4)
+
+### Cannot
+
+❌ Booking confirmation
+❌ Service access
+❌ Dealer financials
+
+---
+
+# 8. FINANCE EXECUTIVE (DEALER)
+
+### Access
+
+* Dealer finance pages
+
+### Pages
+
+* Receivables
+* Invoices
+* Payment tracking
+
+### Can ADD
+
+* Payment entries
+* Invoice acknowledgements
+
+### Can VIEW
+
+* Incentives
+* GST summaries
+
+### Cannot
+
+❌ Bookings
+❌ Service operations
+❌ Warranty claims
+
+---
+
+# 9. CUSTOMER (OPTIONAL APP)
+
+### Access
+
+* Own data only
+
+### Pages
+
+* Vehicle details
+* Service history
+* Warranty status
+* Complaint raise
+* Appointment booking
+
+### Can ADD
+
+* Service request
+* Complaint
+* Feedback
+
+### Cannot
+
+❌ Dealer internal data
+❌ Pricing rules
+❌ Warranty approval
+
+---
+
+# 10. ROLE → MODULE ACCESS MATRIX (SUMMARY)
+
+| Module    | HO | Dealer Principal | Sales | Service | Tech | CRM | Finance | Customer |
+| --------- | -- | ---------------- | ----- | ------- | ---- | --- | ------- | -------- |
+| Dashboard | ✔  | ✔                | ✔     | ✔       | ❌    | ✔   | ✔       | ❌        |
+| Sales     | ✔  | ✔                | ✔     | ❌       | ❌    | ❌   | ❌       | ❌        |
+| Service   | ✔  | ✔                | ❌     | ✔       | ✔    | ❌   | ❌       | ✔        |
+| Spares    | ✔  | ✔                | ❌     | ✔       | ❌    | ❌   | ❌       | ❌        |
+| Warranty  | ✔  | View             | ❌     | Submit  | ❌    | ❌   | ❌       | View     |
+| CRM       | ✔  | ✔                | ✔     | ❌       | ❌    | ✔   | ❌       | ❌        |
+| Finance   | ✔  | View             | ❌     | ❌       | ❌    | ❌   | ✔       | ❌        |
+| Admin     | ✔  | ❌                | ❌     | ❌       | ❌    | ❌   | ❌       | ❌        |
+
+---
+
+# 11. DATA VISIBILITY RULES (CRITICAL)
+
+* Dealer users **never see other dealers**
+* Technicians **never see money**
+* CRM users **never confirm sales**
+* Finance users **never touch operations**
+* Customers **see only their VIN**
+
+Break these rules → data leaks → lawsuits.
+
+---
+
+## NEXT (REAL EXECUTION)
+
+Choose what you want next:
+
+1. **RBAC DB schema (roles, permissions, policies)**
+2. **API permission middleware logic**
+3. **UI permission guards (React)**
+4. **Mobile app role split**
+5. **Compliance & audit rules**
+
+Reply with the number.

@@ -296,3 +296,196 @@ export interface ServiceMetrics {
   completed: number;
   pending: number;
 }
+
+// ============================================================
+// RBAC - Role-Based Access Control
+// ============================================================
+
+export const UserRole = {
+  HO_SUPER_ADMIN: "ho_super_admin",
+  HO_SALES_ADMIN: "ho_sales_admin",
+  HO_SERVICE_ADMIN: "ho_service_admin",
+  HO_FINANCE_ADMIN: "ho_finance_admin",
+  DEALER_PRINCIPAL: "dealer_principal",
+  DEALER_SALES_EXECUTIVE: "dealer_sales_exec",
+  SERVICE_MANAGER: "service_manager",
+  TECHNICIAN: "technician",
+  CRM_EXECUTIVE: "crm_executive",
+  FINANCE_EXECUTIVE: "finance_executive",
+  CUSTOMER: "customer",
+} as const;
+
+export type UserRoleType = typeof UserRole[keyof typeof UserRole];
+
+export const Module = {
+  DASHBOARD: "dashboard",
+  SALES: "sales",
+  SERVICE: "service",
+  SPARES: "spares",
+  WARRANTY: "warranty",
+  CRM: "crm",
+  FINANCE: "finance",
+  ADMIN: "admin",
+} as const;
+
+export type ModuleType = typeof Module[keyof typeof Module];
+
+export const Permission = {
+  VIEW: "view",
+  CREATE: "create",
+  EDIT: "edit",
+  DELETE: "delete",
+  APPROVE: "approve",
+  SUBMIT: "submit",
+} as const;
+
+export type PermissionType = typeof Permission[keyof typeof Permission];
+
+// Role permissions matrix
+export const rolePermissions: Record<UserRoleType, Record<ModuleType, PermissionType[]>> = {
+  [UserRole.HO_SUPER_ADMIN]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: ["view"],
+    [Module.SERVICE]: ["view"],
+    [Module.SPARES]: ["view"],
+    [Module.WARRANTY]: ["view", "approve"],
+    [Module.CRM]: ["view"],
+    [Module.FINANCE]: ["view", "approve"],
+    [Module.ADMIN]: ["view", "create", "edit", "delete"],
+  },
+  [UserRole.HO_SALES_ADMIN]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: ["view", "approve"],
+    [Module.SERVICE]: [],
+    [Module.SPARES]: [],
+    [Module.WARRANTY]: [],
+    [Module.CRM]: ["view"],
+    [Module.FINANCE]: [],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.HO_SERVICE_ADMIN]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: [],
+    [Module.SERVICE]: ["view", "approve"],
+    [Module.SPARES]: ["view"],
+    [Module.WARRANTY]: ["view", "approve"],
+    [Module.CRM]: [],
+    [Module.FINANCE]: [],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.HO_FINANCE_ADMIN]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: [],
+    [Module.SERVICE]: [],
+    [Module.SPARES]: [],
+    [Module.WARRANTY]: [],
+    [Module.CRM]: [],
+    [Module.FINANCE]: ["view", "create", "edit", "approve"],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.DEALER_PRINCIPAL]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: ["view", "create", "edit"],
+    [Module.SERVICE]: ["view", "create", "edit"],
+    [Module.SPARES]: ["view", "create", "edit"],
+    [Module.WARRANTY]: ["view"],
+    [Module.CRM]: ["view", "create", "edit"],
+    [Module.FINANCE]: ["view"],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.DEALER_SALES_EXECUTIVE]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: ["view", "create", "edit"],
+    [Module.SERVICE]: [],
+    [Module.SPARES]: [],
+    [Module.WARRANTY]: [],
+    [Module.CRM]: ["view", "create", "edit"],
+    [Module.FINANCE]: [],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.SERVICE_MANAGER]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: [],
+    [Module.SERVICE]: ["view", "create", "edit"],
+    [Module.SPARES]: ["view"],
+    [Module.WARRANTY]: ["view", "submit"],
+    [Module.CRM]: [],
+    [Module.FINANCE]: [],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.TECHNICIAN]: {
+    [Module.DASHBOARD]: [],
+    [Module.SALES]: [],
+    [Module.SERVICE]: ["view", "edit"],
+    [Module.SPARES]: [],
+    [Module.WARRANTY]: [],
+    [Module.CRM]: [],
+    [Module.FINANCE]: [],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.CRM_EXECUTIVE]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: [],
+    [Module.SERVICE]: [],
+    [Module.SPARES]: [],
+    [Module.WARRANTY]: [],
+    [Module.CRM]: ["view", "create", "edit"],
+    [Module.FINANCE]: [],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.FINANCE_EXECUTIVE]: {
+    [Module.DASHBOARD]: ["view"],
+    [Module.SALES]: [],
+    [Module.SERVICE]: [],
+    [Module.SPARES]: [],
+    [Module.WARRANTY]: [],
+    [Module.CRM]: [],
+    [Module.FINANCE]: ["view", "create", "edit"],
+    [Module.ADMIN]: [],
+  },
+  [UserRole.CUSTOMER]: {
+    [Module.DASHBOARD]: [],
+    [Module.SALES]: [],
+    [Module.SERVICE]: ["view"],
+    [Module.SPARES]: [],
+    [Module.WARRANTY]: ["view"],
+    [Module.CRM]: [],
+    [Module.FINANCE]: [],
+    [Module.ADMIN]: [],
+  },
+};
+
+// Helper functions for checking permissions
+export function hasModuleAccess(role: UserRoleType, module: ModuleType): boolean {
+  const permissions = rolePermissions[role]?.[module];
+  return permissions && permissions.length > 0;
+}
+
+export function hasPermission(role: UserRoleType, module: ModuleType, permission: PermissionType): boolean {
+  const permissions = rolePermissions[role]?.[module];
+  return permissions?.includes(permission) ?? false;
+}
+
+export function getModulesForRole(role: UserRoleType): ModuleType[] {
+  const permissions = rolePermissions[role];
+  if (!permissions) return [];
+  return Object.entries(permissions)
+    .filter(([, perms]) => perms.length > 0)
+    .map(([module]) => module as ModuleType);
+}
+
+export function isHORole(role: UserRoleType): boolean {
+  return role.startsWith("ho_");
+}
+
+export function isDealerRole(role: UserRoleType): boolean {
+  const dealerRoles: UserRoleType[] = [
+    UserRole.DEALER_PRINCIPAL,
+    UserRole.DEALER_SALES_EXECUTIVE,
+    UserRole.SERVICE_MANAGER,
+    UserRole.TECHNICIAN,
+    UserRole.CRM_EXECUTIVE,
+    UserRole.FINANCE_EXECUTIVE,
+  ];
+  return dealerRoles.includes(role);
+}
