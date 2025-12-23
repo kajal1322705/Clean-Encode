@@ -53,7 +53,8 @@ Preferred communication style: Simple, everyday language.
 
 ### Key Design Patterns
 - **Shared Schema**: Database types and validation schemas shared between frontend and backend
-- **Memory Storage Fallback**: `MemStorage` class provides in-memory implementation when database isn't available
+- **Database Storage**: `DatabaseStorage` class in `server/storage.ts` provides PostgreSQL persistence via Drizzle ORM
+- **Auto-Seeding**: Initial demo data is seeded on first startup (dealers, bookings, job cards, inventory)
 - **Component Composition**: Extensive use of Radix UI primitives wrapped with shadcn/ui styling
 - **Query-Based Data Fetching**: All API data fetched via React Query with automatic caching
 
